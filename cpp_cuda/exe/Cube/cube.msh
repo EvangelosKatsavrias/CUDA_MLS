@@ -1,0 +1,39 @@
+! Project file
+Cube/cube.msh
+
+! Node data file (use '-' for a file path similar to the project file, with .nod extension) 
+Cube/cube.nod
+
+! Connectivity data file (use '-' for a file path similar to project file, with .ele extension) 
+Cube/cube.ele
+
+! Domain cardinality
+3
+
+! Perturbed nodes data: (node set) (data source type){0:file, 1:affine transformation, 2:Linear displacement, 3:Rotation_EulerAngles, 4:Rotation_AxisAngle, 5:Rotation_Quaternion} (parameters for current node set and fixation type)
+3 3 0 0 0 .78 0 0
+0 3 0 0 0 .78 0 0
+1 3 0 0 0 .78 0 0
+
+! Solution method, option number (0:MLS_LCS)
+0
+
+! Polynomial degree
+1
+
+! Weighting function type, option number (0:Wendland, 1:Radial, 2:Gaussian, 3:Hyperbolic)
+0
+
+! Weighting function span and cutoff multiplier
+3	10	1	4
+0	10	1	4
+1	10	1	4
+
+! Computing mode, option number (0:CPU, 1:CPU_MT, 2:CUDA, 3:CPU+CUDA, 4:CUDA MultiGPU)
+0
+
+! Linear solver type (1:GaussEliminationWithBackSubst, 2:Conjugate Gradient, 3:LU Doolittle, 4:LU Crout, 5:LDU, 6:LDL, 7:Cholesky, 8:Cholesky banded, 9:Cholesky skyline)
+1
+
+! File to store the adapted node data (use '-' for a file path similar to project file, with .res extension) 
+Cube/cube.res

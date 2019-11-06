@@ -1,0 +1,33 @@
+#include<vector>
+#include<algorithm>
+#include<iostream>
+#include"Nodes.h"
+
+using namespace std;
+
+
+void Nodes_test();
+
+int main()
+{
+
+/*
+vector<double> v1, v2;
+
+v1.resize(10, 5);
+
+v2.reserve(10);
+
+copy(v1.begin(), v1.end(), v2.begin());
+
+for (int i=0; i<10;i++) cout << v2[i] << endl;
+
+cout << "Size of vector 1: " << v1.size() << endl << "Size of vector 2: " << v2.size() << endl;
+*/
+
+
+Nodes_test();
+
+
+return 0;
+}

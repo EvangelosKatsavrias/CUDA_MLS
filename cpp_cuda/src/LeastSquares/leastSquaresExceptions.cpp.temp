@@ -1,0 +1,18 @@
+#include"leastSquaresExceptions.h"
+
+leastSquaresException::leastSquaresException(LeastSquares* refLeastSquares)
+{
+	m_referenceLeastSquares = refLeastSquares;
+}
+
+leastSquaresException_numOfValues::leastSquaresException_numOfValues()
+{}
+
+
+
+/*
+int leastSquaresException_numOfValues::operator()()
+{
+	return 1;
+}
+*/

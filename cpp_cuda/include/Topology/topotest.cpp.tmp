@@ -1,0 +1,18 @@
+#include"Topology.h"
+
+int main()
+{
+Topology<float, int, int, 2 > topo;
+
+size_t numOfNodes(10);
+int nodeFlagsc[] = { 0, 0, 0, 1, 1, 1, 2, 2, 2, 0 }; NodeFlags<int> nodeFlags(numOfNodes, nodeFlagsc);
+std::set<int> interiorFlagValues = { 0 };
+
+topo.set_numOfNodes( numOfNodes ); topo.set_nodeFlags( &nodeFlags ); topo.set_interiorFlagValues( interiorFlagValues );
+
+std::set<int> flval = topo.find_flagValues( &nodeFlags);
+std::map<int, std::vector<size_t> > map = topo.find_flagToNodesMap ( &nodeFlags, &flval );
+
+for (auto& vall: map ) for ( auto& el: vall.second ) std::cout << el << std::endl;
+
+}

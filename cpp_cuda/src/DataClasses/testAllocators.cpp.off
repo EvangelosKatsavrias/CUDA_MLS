@@ -1,0 +1,80 @@
+#include<memory>
+#include<vector>
+#include<iostream>
+
+
+class memArena
+{
+	void* p;
+	int s;
+
+public:
+	memArena(void* pp=0, int ss=0): p(pp), s(ss) { }
+
+};
+
+
+template<class T>
+class myallocator: public std::allocator<T>
+{
+	memArena& m_arena;
+	bool	m_internalArenaFlag{1};
+
+public:
+	using value_type = T;
+	using std::allocator<T>::address;
+
+	myallocator(  ): m_arena( *(new memArena) ) {}
+	myallocator(memArena& arena ): m_arena(arena), m_internalArenaFlag{0} {  }
+	~myallocator() { if ( m_internalArenaFlag ) delete &m_arena;  }
+
+	value_type* allocate(size_t n) { return static_cast<T*>( ::operator new( n*sizeof(T) ) ); }
+	void deallocate(value_type* p, size_t n ) { ::delete(p); }
+
+};
+
+
+template<class T>
+class myclass
+{
+
+public:
+	myclass(){}
+	myclass(myclass& a){}
+	~myclass(){}
+
+
+};
+
+
+int main()
+{
+
+
+myclass<double> x;
+
+myallocator< myclass<double> > aloc;
+
+
+std::cout << aloc.address(x) << std::endl;
+
+myclass<double>* p =aloc.allocate(50);
+aloc.deallocate(p, 50);
+
+size_t sz(2000000000);
+myclass<double>* p2=aloc.allocate(sz);
+myclass<double>* p3=aloc.allocate(sz);
+myclass<double>* p4=aloc.allocate(sz);
+
+std::cout << aloc.max_size() << std::endl;
+
+aloc.deallocate(p2, sz );
+aloc.deallocate(p3, sz );
+aloc.deallocate(p4, sz );
+
+memArena arena1{new char[200000], 200000 };
+
+std::vector<int, myallocator<int> > v1{ myallocator<int>{ arena1 } };
+
+
+}

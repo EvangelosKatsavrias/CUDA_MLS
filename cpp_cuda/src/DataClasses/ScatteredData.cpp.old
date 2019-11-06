@@ -1,0 +1,138 @@
+#include"ScatteredData.h"
+#include<stdexcept>
+#include<iostream>
+
+
+template<class T>
+ScatteredData<T>::ScatteredData(int numOfSpatialDimensions, int numOfFieldsPerPoint, int numOfDataPoints): m_spatialData(numOfSpatialDimensions, numOfDataPoints), m_fieldData(numOfFieldsPerPoint, numOfDataPoints), m_numOfDataPoints(numOfDataPoints)
+{}
+
+
+template<class T>
+void ScatteredData<T>::set_newSpatialData(int numOfDataPoints, T** newData)
+{
+	m_spatialData.set_allComponentsData(numOfDataPoints, newData);
+	m_numOfDataPoints = numOfDataPoints;
+}
+
+
+
+template<class T>
+void ScatteredData<T>::set_newFieldData(int fieldIndex, T* newData)
+{
+//	if (sizeOfNewData != m_numOfDataPoints) {throw std::runtime_error("The number of sample values does not correspond to the number of sample points.");}
+
+	m_fieldData[fieldIndex] = newData;
+}
+
+
+template<class T>
+void ScatteredData<T>::set_AllFieldData(T** newData)
+{
+	m_spatialData.assign(newData, newData+m_numOfFieldsPerPoint);
+}
+
+
+template<class T>
+void ScatteredData<T>::insert_newFieldData(T* newData)
+{
+	m_fieldData.push_back(newData);
+}
+
+
+template<class T>
+void ScatteredData<T>::readSpatialDataFromFile(int numOfDataPoints, std::string filePath)
+{
+	std::ifstream newFileStream;
+	newFileStream.open(filePath);
+
+	for (int dataIndex = 0; dataIndex < m_numOfSpatialDimensions; dataIndex++)
+		m_stackOfCreatedSpatialVectors[dataIndex].reserve(numOfDataPoints); 
+
+	T newElement;
+	while (	newFileStream >> newElement )
+	{
+		m_stackOfCreatedSpatialVectors[0].push_back(newElement);
+		for (int dataIndex = 1; dataIndex < m_numOfSpatialDimensions; dataIndex++)
+		{
+			newFileStream >> newElement;
+			m_stackOfCreatedSpatialVectors[dataIndex].push_back(newElement);
+		}
+	}
+	newFileStream.close();
+
+	m_numOfDataPoints = numOfDataPoints;
+
+	for (int dataIndex = 0; dataIndex < m_numOfSpatialDimensions; dataIndex++)
+		m_spatialData[dataIndex] = m_stackOfCreatedSpatialVectors[dataIndex].data();
+
+}
+
+
+template<class T>
+void ScatteredData<T>::readFieldDataFromFile(std::string filePath, int numOfFields, int* fieldIndices)
+{
+	std::ifstream newFileStream;
+	newFileStream.open(filePath);
+
+	for (int dataIndex = 0; dataIndex < numOfFields; dataIndex++)
+		m_stackOfCreatedFieldVectors[fieldIndices[dataIndex]].reserve(m_numOfDataPoints); 
+
+
+	T newElement;
+	while (	newFileStream >> newElement )
+	{
+		m_stackOfCreatedFieldVectors[fieldIndices[0]].push_back(newElement);
+		for (int dataIndex = 1; dataIndex < numOfFields; dataIndex++)
+		{
+			newFileStream >> newElement;
+			m_stackOfCreatedFieldVectors[fieldIndices[dataIndex]].push_back(newElement);
+		}
+	}
+	newFileStream.close();
+
+	for (int dataIndex = 0; dataIndex < numOfFields; dataIndex++)
+		m_fieldData[fieldIndices[dataIndex]] = m_stackOfCreatedFieldVectors[fieldIndices[dataIndex]].data();
+}
+
+
+template<class T>
+void ScatteredData<T>::readAllFieldDataFromFile(std::string filePath)
+{
+	int indices[m_numOfFieldsPerPoint];
+	for (int index = 0; index < m_numOfFieldsPerPoint; index++) indices[index] = index;
+	readFieldDataFromFile(filePath, m_numOfFieldsPerPoint, indices);
+}
+
+
+template<class T>
+void ScatteredData<T>::readAllDataFromFile(std::string filePath)
+{
+	std::ifstream newFileStream;
+	newFileStream.open(filePath);
+
+	T newElement;
+	while (	newFileStream >> newElement )
+	{
+		m_stackOfCreatedSpatialVectors[0].push_back(newElement);
+		for (int dataIndex = 1; dataIndex < m_numOfSpatialDimensions; dataIndex++)
+		{
+			newFileStream >> newElement;
+			m_stackOfCreatedSpatialVectors[dataIndex].push_back(newElement);
+		}
+		for (int dataIndex = 0; dataIndex < m_numOfFieldsPerPoint; dataIndex++)
+		{
+			newFileStream >> newElement;
+			m_stackOfCreatedFieldVectors[dataIndex].push_back(newElement);
+		}
+	}
+
+	newFileStream.close();
+
+	m_numOfDataPoints = m_stackOfCreatedSpatialVectors[0].size();
+
+	for (int dataIndex = 0; dataIndex < m_numOfSpatialDimensions; dataIndex++)
+		m_spatialData[dataIndex] = m_stackOfCreatedSpatialVectors[dataIndex].data();
+	for (int dataIndex = 0; dataIndex < m_numOfFieldsPerPoint; dataIndex++)
+		m_fieldData[dataIndex] = m_stackOfCreatedFieldVectors[dataIndex].data();
+}

@@ -1,0 +1,32 @@
+#include"myBLAS.h"
+
+template<class T>
+void initializeVector(int vectorSize, T* vector, T initialValue)
+{
+	for (int index = 0; index < vectorSize; index++) vector[index] = initialValue;
+}
+
+template<class T>
+void multiplicationOfVectorbyScalar(int vectorSize, T* vector, T scalar, T* result)
+{
+	for (int index = 0; index < vectorSize; index++) result[index] = scalar*vector[index];
+}
+
+
+template<class T>
+void tensorProductOfVectors(int vectorSize, T* vector_1, T* vector_2, T* result)
+{
+	for (int vector1_index = 0; vector1_index < vectorSize; vector1_index++)
+	{
+		multiplicationOfVectorbyScalar(vectorSize, vector_2, vector_1[vector1_index], (result+vector1_index*vectorSize));
+	}
+}
+
+
+template<class T>
+void sumOfVectors(int vectorSize, T* vector_1, T* vector_2, T* result)
+{
+	for (int vector_index = 0; vector_index < vectorSize; vector_index++) result[vector_index] = vector_1[vector_index] + vector_2[vector_index];
+}
+
+

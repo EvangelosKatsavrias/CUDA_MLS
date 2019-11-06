@@ -1,0 +1,9 @@
+#include"gpuDeviceProperties.h"
+
+int main() 
+{
+
+plotAllGPUsProperties();
+return 0;
+
+}
